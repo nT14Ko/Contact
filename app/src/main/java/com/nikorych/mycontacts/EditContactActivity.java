@@ -103,12 +103,21 @@ public class EditContactActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                 }
-                // Если у контакта нет id, то мы его создадим, но уже без первого варианта, ибо создать контакт с "системным (в drawable)" фото нельзя
+                // Если у контакта нет id, то мы его создадим, и если не была указана никакая фотография, то в качестве фото контакта будет фото из drawable
             } else {
+                if (photo != null){
                     Contact contact = new Contact(photo, name, surname, email);
                     viewModel.insertContact(contact);
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
+                } else {
+                        Contact contact = new Contact(R.drawable.ic_launcher_foreground, name, surname, email);
+                        viewModel.insertContact(contact);
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+
+                }
+
             }
 
         } else {

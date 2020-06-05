@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 @Database(entities = {Contact.class}, version = 1, exportSchema = false)
 public abstract class ContactsDatabase extends RoomDatabase {
     private static ContactsDatabase database;
-    private static final String DB_NAME = "contacts2.db";
+    private static final String DB_NAME = "contacts3.db";
     private static final Object LOCK = new Object();
 
     public static ContactsDatabase getInstance(Context context){
