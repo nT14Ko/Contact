@@ -48,8 +48,11 @@ public class EditContactActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (contact.getPhoto() != null){
-            Picasso.get().load(contact.getPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
+        // Если у фотографии есть какое-то айди (фотография была добавлена мною вручную (в drawable)), то Пикассо поставит это фото. В ином случае - Пикассо попробует найти фотографию по адресу
+        if (contact.getIdPhoto() != 0 && contact.getPhoto() == null){
+            Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
+        } else {
+            Picasso.get().load(Uri.parse(contact.getPhoto())).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
         }
 
     }
@@ -65,6 +68,7 @@ public class EditContactActivity extends AppCompatActivity {
         editTextContactSurname = findViewById(R.id.editTextContactSurname);
         imageViewBigContactPhoto = findViewById(R.id.imageViewBigContactPhoto);
         Intent intent = getIntent();
+        // Получаем id фильма, ели оно есть, то заполняем соответсвующие  поля
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
             imageViewEditContactPhoto.setVisibility(View.GONE);
@@ -84,7 +88,9 @@ public class EditContactActivity extends AppCompatActivity {
         String name = editTextContactName.getText().toString().trim();
         String surname = editTextContactSurname.getText().toString().trim();
         getPhoto();
+        // Если поля заполнены, то сохраняем контакт, если нет - выоводим Тост
         if (isFilled(name, surname, email)){
+            // Если у контакта есть id, то мы его перезапишем. В первом случае с айди фото, если этот контакт "системный(в drawable)" и во втором случае с адресом фото
             if (id != 0){
                 if (isSystemPhoto()){
                     Contact contact = new Contact(id, photoId, name, surname, email);
@@ -97,6 +103,7 @@ public class EditContactActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                 }
+                // Если у контакта нет id, то мы его создадим, но уже без первого варианта, ибо создать контакт с "системным (в drawable)" фото нельзя
             } else {
                     Contact contact = new Contact(photo, name, surname, email);
                     viewModel.insertContact(contact);
@@ -109,16 +116,13 @@ public class EditContactActivity extends AppCompatActivity {
         }
 
     }
-    private void setPhoto(){
-        if (isSystemPhoto()){
-            Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
-        } else {
-            Picasso.get().load(contact.getPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
-        }
-    }
+
+    // Проверка заполненности полей
     private boolean isFilled(String name, String surname, String email){
         return !name.isEmpty() && !surname.isEmpty() && !email.isEmpty();
     }
+
+    // ПРоверка на то, содержится ли фотография в drawable
     private boolean isSystemPhoto(){
         if (contact.getIdPhoto() != 0 && contact.getPhoto() == null){
             return true;
@@ -134,6 +138,7 @@ public class EditContactActivity extends AppCompatActivity {
         }
     }
 
+    //Интент для того, чтобы взять фото из галереи
     public void onclickEditPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/jpeg");
@@ -142,6 +147,7 @@ public class EditContactActivity extends AppCompatActivity {
 
     }
 
+    //Устанавливаем у нашей фотографии адрес из галереии
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -152,5 +158,10 @@ public class EditContactActivity extends AppCompatActivity {
                 contact.setPhoto(uri.toString());
             }
         }
+    }
+
+    public void onClickGoBack(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

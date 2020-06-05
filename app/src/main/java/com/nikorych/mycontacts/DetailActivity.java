@@ -39,16 +39,19 @@ public class DetailActivity extends AppCompatActivity {
         imageViewDetailContactPhoto = findViewById(R.id.imageViewDetailContactPhoto);
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         Intent intent = getIntent();
+        // Получаем id фильма
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
 
         } else {
             finish();
         }
+        // По этому id получаем фильм из базы данных и заполняем соответсвующие поля
         contact = viewModel.getContactById(id);
         textViewDetailContactEmail.setText(contact.getEmail());
         textViewDetailContactName.setText(contact.getName());
         textViewDetailContactSurname.setText(contact.getSurname());
+        // Если у фотографии есть какое-то айди (фотография была добавлена мною вручную(в drawable)), то Пикассо поставит это фото. В ином случае - Пикассо попробует найти фотографию по адресу
         if (contact.getIdPhoto() != 0){
             Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewDetailContactPhoto);
         } else {

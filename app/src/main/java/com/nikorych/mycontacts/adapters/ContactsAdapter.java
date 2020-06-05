@@ -75,7 +75,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         holder.textViewContactEmail.setText(contact.getEmail());
 
     }
-    
+
 
     @Override
     public int getItemCount() {
