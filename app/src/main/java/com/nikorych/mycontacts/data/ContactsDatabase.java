@@ -12,13 +12,14 @@ public abstract class ContactsDatabase extends RoomDatabase {
     private static final String DB_NAME = "contacts4.db";
     private static final Object LOCK = new Object();
 
-    public static ContactsDatabase getInstance(Context context){
-        synchronized (LOCK){
-            if (database == null){
+    public static ContactsDatabase getInstance(Context context) {
+        synchronized (LOCK) {
+            if (database == null) {
                 database = Room.databaseBuilder(context, ContactsDatabase.class, DB_NAME).build();
             }
             return database;
         }
     }
+
     public abstract ContactsDao contactsDao();
 }

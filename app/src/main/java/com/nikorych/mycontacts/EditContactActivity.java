@@ -40,7 +40,6 @@ public class EditContactActivity extends AppCompatActivity {
     private static final int RC_GET_IMAGE = 1;
 
 
-    private int index;
     private int id;
     private int photoId;
     private String photo;
@@ -58,6 +57,10 @@ public class EditContactActivity extends AppCompatActivity {
         editTextContactName = findViewById(R.id.editTextContactName);
         editTextContactSurname = findViewById(R.id.editTextContactSurname);
         imageViewBigContactPhoto = findViewById(R.id.imageViewBigContactPhoto);
+        getContact();
+    }
+
+    private void getContact() {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
@@ -76,11 +79,7 @@ public class EditContactActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (contact.getIdPhoto() != 0 && contact.getPhoto() == null) {
-            Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
-        } else {
-            Picasso.get().load(Uri.parse(contact.getPhoto())).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
-        }
+        setPhoto();
     }
 
     public void onClickSaveContact(View view) {
@@ -92,27 +91,36 @@ public class EditContactActivity extends AppCompatActivity {
             if (id != 0) {
                 if (isSystemPhoto()) {
                     Contact contact = new Contact(id, photoId, name, surname, email);
-                    viewModel.insertContact(contact);
-                    finish();
+                    insertContact(contact);
                 } else {
                     Contact contact = new Contact(id, photo, name, surname, email);
-                    viewModel.insertContact(contact);
-                    finish();
+                    insertContact(contact);
                 }
             } else {
                 if (photo != null) {
                     Contact contact = new Contact(photo, name, surname, email);
-                    viewModel.insertContact(contact);
-                    finish();
+                    insertContact(contact);
                 } else {
                     Contact contact = new Contact(R.drawable.ic_launcher_foreground, name, surname, email);
-                    viewModel.insertContact(contact);
-                    finish();
+                    insertContact(contact);
                 }
             }
         } else {
-            Toast.makeText(this, "Все поля должны быть заполенны", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "All fills must be filled", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setPhoto() {
+        if (contact.getIdPhoto() != 0 && contact.getPhoto() == null) {
+            Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
+        } else {
+            Picasso.get().load(Uri.parse(contact.getPhoto())).placeholder(R.drawable.ic_launcher_foreground).into(imageViewBigContactPhoto);
+        }
+    }
+
+    private void insertContact(Contact contact) {
+        viewModel.insertContact(contact);
+        finish();
     }
 
     private boolean isFilled(String name, String surname, String email) {

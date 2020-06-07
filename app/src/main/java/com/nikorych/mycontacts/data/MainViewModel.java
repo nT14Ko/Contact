@@ -23,14 +23,15 @@ public class MainViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<List<Contact>> getContacts(){
+    public LiveData<List<Contact>> getContacts() {
         return contacts;
     }
 
 
-    public void insertContact(Contact contact){
-     new InsertTask().execute(contact);
+    public void insertContact(Contact contact) {
+        new InsertTask().execute(contact);
     }
+
     private static class InsertTask extends AsyncTask<Contact, Void, Void> {
         @Override
         protected Void doInBackground(Contact... contacts) {
@@ -41,9 +42,10 @@ public class MainViewModel extends AndroidViewModel {
         }
     }
 
-    public void deleteContact(Contact contact){
+    public void deleteContact(Contact contact) {
         new DeleteTask().execute(contact);
     }
+
     private static class DeleteTask extends AsyncTask<Contact, Void, Void> {
         @Override
         protected Void doInBackground(Contact... contacts) {
@@ -54,7 +56,7 @@ public class MainViewModel extends AndroidViewModel {
         }
     }
 
-    public Contact getContactById(int id){
+    public Contact getContactById(int id) {
         try {
             return new GetContactTask().execute(id).get();
         } catch (ExecutionException e) {
@@ -64,6 +66,7 @@ public class MainViewModel extends AndroidViewModel {
         }
         return null;
     }
+
     private static class GetContactTask extends AsyncTask<Integer, Void, Contact> {
         @Override
         protected Contact doInBackground(Integer... integers) {
@@ -74,13 +77,14 @@ public class MainViewModel extends AndroidViewModel {
         }
     }
 
-    public void deleteAllContacts(){
+    public void deleteAllContacts() {
         new DeleteAllContactsTask().execute();
     }
+
     private static class DeleteAllContactsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... contacts) {
-                database.contactsDao().deleteAllContacts();
+            database.contactsDao().deleteAllContacts();
             return null;
         }
     }

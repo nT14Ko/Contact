@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.itemGetStarted:
-                getStarted();
+                firstStart();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -54,19 +54,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        if (!preferences.getBoolean("started", false)) {
-            getStarted();
-            preferences.edit().putBoolean("started", true).apply();
-        }
+        getStarted();
+        setRecyclerViewAndAdapter();
+        adapterClickListenerAndTouchHelper();
+        registerObserver();
+    }
 
+    private void deleteContact(int position) {
+        Contact contact = adapter.getContacts().get(position);
+        viewModel.deleteContact(contact);
+    }
+
+    private void setRecyclerViewAndAdapter(){
         recyclerViewContacts = findViewById(R.id.recyclerViewContacts);
         adapter = new ContactsAdapter(contacts);
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this));
-        registerObserver();
         recyclerViewContacts.setAdapter(adapter);
+    }
+
+    private void adapterClickListenerAndTouchHelper(){
         adapter.setOnContactIntentClickListener(new ContactsAdapter.OnContactIntentClickListener() {
             @Override
             public void onContactClick(int position) {
@@ -96,11 +103,6 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerViewContacts);
     }
 
-    private void deleteContact(int position) {
-        Contact contact = adapter.getContacts().get(position);
-        viewModel.deleteContact(contact);
-    }
-
     private void registerObserver() {
         LiveData<List<Contact>> contactsFromDb = viewModel.getContacts();
         contactsFromDb.observe(this, new Observer<List<Contact>>() {
@@ -111,14 +113,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getStarted() {
+    private void getStarted(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.getBoolean("started", false)) {
+            firstStart();
+            preferences.edit().putBoolean("started", true).apply();
+        }
+
+    }
+
+    private void firstStart() {
         viewModel.deleteAllContacts();
         viewModel.insertContact(new Contact(R.drawable.contact1, "Welsh", "Corgi", "welshcorgi@gmail.com"));
         viewModel.insertContact(new Contact(R.drawable.contact_cat, "Egor", "Cat", "coshkaegor@mail.ru"));
-        viewModel.insertContact(new Contact(R.drawable.contact_hamster, "John", "Hamster", "homyakdjon@ukr.ner"));
+        viewModel.insertContact(new Contact(R.drawable.contact_hamster, "John", "Hamster", "homyakdjon@ukr.net"));
         viewModel.insertContact(new Contact(R.drawable.dog_contact, "Good", "Boy", "goodboy@gmail.com"));
         viewModel.insertContact(new Contact(R.drawable.pugs_contact, "Pugs", "Brothers", "brotherspugs@gmail.com"));
-        viewModel.insertContact(new Contact(R.drawable.contact0, "Tsyatka", "Cat", "doroshenko.m23@gail.com"));
+        viewModel.insertContact(new Contact(R.drawable.contact0, "Tsyatka", "Cat", "doroshenko.m23@gmail.com"));
     }
 
     public void onClickAddContact(View view) {

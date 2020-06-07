@@ -24,6 +24,7 @@ public class Contact {
         this.surname = surname;
         this.email = email;
     }
+
     @Ignore
     public Contact(int id, int IdPhoto, String name, String surname, String email) {
         this.id = id;
@@ -32,6 +33,7 @@ public class Contact {
         this.surname = surname;
         this.email = email;
     }
+
     @Ignore
     public Contact(int IdPhoto, String name, String surname, String email) {
         this.idPhoto = IdPhoto;
@@ -39,6 +41,7 @@ public class Contact {
         this.surname = surname;
         this.email = email;
     }
+
     @Ignore
     public Contact(String photo, String name, String surname, String email) {
         this.photo = photo;
@@ -46,8 +49,9 @@ public class Contact {
         this.surname = surname;
         this.email = email;
     }
+
     @Ignore
-    public Contact(){
+    public Contact() {
 
     }
 
