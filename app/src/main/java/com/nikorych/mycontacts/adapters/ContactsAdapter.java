@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     public interface OnDeleteContactClickListener {
         void onContactClick(int position);
     }
-    public interface OnContactIntentClickListener{
+
+    public interface OnContactIntentClickListener {
         void onContactClick(int position);
     }
 
@@ -42,7 +44,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         this.onContactIntentClickListener = onContactIntentClickListener;
     }
 
-    public ContactsAdapter(List<Contact> contacts){
+    public ContactsAdapter(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
@@ -65,7 +67,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
-        if (contact.getIdPhoto() != 0 && contact.getPhoto() == null){
+        if (contact.getIdPhoto() != 0 && contact.getPhoto() == null) {
             Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(holder.imageViewContactPhoto);
         } else {
             Picasso.get().load(Uri.parse(contact.getPhoto())).placeholder(R.drawable.ic_launcher_foreground).into(holder.imageViewContactPhoto);
@@ -73,7 +75,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         holder.textViewContactName.setText(contact.getName());
         holder.textViewContactSurname.setText(contact.getSurname());
         holder.textViewContactEmail.setText(contact.getEmail());
+    }
 
+    private static Bitmap base64ToBitmap(String b64) {
+        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
     }
 
 
@@ -82,7 +88,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         return contacts.size();
     }
 
-    class ContactViewHolder extends RecyclerView.ViewHolder{
+    class ContactViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageViewContactPhoto;
         private TextView textViewContactName;
@@ -100,7 +106,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onContactIntentClickListener != null){
+                    if (onContactIntentClickListener != null) {
                         onContactIntentClickListener.onContactClick(getAdapterPosition());
                     }
                 }
@@ -108,7 +114,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             imageViewDeleteContact.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onContactClickListener != null){
+                    if (onContactClickListener != null) {
                         onContactClickListener.onContactClick(getAdapterPosition());
                     }
                 }

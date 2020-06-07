@@ -52,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
         textViewDetailContactName.setText(contact.getName());
         textViewDetailContactSurname.setText(contact.getSurname());
         // Если у фотографии есть какое-то айди (фотография была добавлена мною вручную(в drawable)), то Пикассо поставит это фото. В ином случае - Пикассо попробует найти фотографию по адресу
-        if (contact.getIdPhoto() != 0){
+        if (contact.getIdPhoto() != 0) {
             Picasso.get().load(contact.getIdPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewDetailContactPhoto);
         } else {
             Picasso.get().load(contact.getPhoto()).placeholder(R.drawable.ic_launcher_foreground).into(imageViewDetailContactPhoto);
